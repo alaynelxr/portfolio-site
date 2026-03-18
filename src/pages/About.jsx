@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import profileImage from "../assets/profileimage.jpg";
+import profileImage from "../assets/profileimage1.webp";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -111,10 +111,23 @@ export default function About() {
               >
                 I started my PM career at StashAway, where I shipped features
                 for a consumer investment platform and co-led market expansions
-                into three new countries within a year. From there, I moved to
-                Anafore (ReferralCandy), where I owned the product for a Shopify
-                referral marketing tool — driving trial conversions, revamping
-                analytics, and earning the "Built for Shopify" certification.
+                into three new countries within a year.
+              </p>
+              <p
+                data-reveal
+                className="text-base leading-relaxed"
+                style={{ color: "var(--muted)" }}
+              >
+                From there, I moved to Anafore (ReferralCandy), where I owned
+                the product for a Shopify referral marketing tool — driving
+                trial conversions, revamping analytics, and earning the "Built
+                for Shopify" certification.
+              </p>
+              <p
+                data-reveal
+                className="text-base leading-relaxed"
+                style={{ color: "var(--muted)" }}
+              >
                 Most recently, I was at fileAI, an AI startup focused on
                 document workflow automation, where I managed enterprise client
                 implementations.

@@ -97,7 +97,6 @@ export default function Home() {
             start: "top 75%",
             toggleActions: "play none none none",
           },
-          y: 50,
           opacity: 0,
           duration: 0.8,
           stagger: 0.15,
@@ -123,7 +122,7 @@ export default function Home() {
         {/* Full-bleed background */}
         <div className="absolute inset-0 overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1542621334-a254cf47733d?auto=format&fit=crop&w=1920&q=80"
+            src="https://images.pexels.com/photos/1181311/pexels-photo-1181311.jpeg?auto=format&fit=crop&w=1920&q=80"
             alt=""
             className="w-full h-full object-cover"
             loading="eager"
@@ -133,7 +132,7 @@ export default function Home() {
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(to top, rgba(28,20,10,0.96) 0%, rgba(28,20,10,0.7) 40%, rgba(28,20,10,0.15) 100%)",
+                "linear-gradient(to top, rgba(28,20,10,0.96) 20%, rgba(28,20,10,0.7) 80%, rgba(28,20,10,0.15) 100%)",
             }}
           />
         </div>
@@ -157,7 +156,7 @@ export default function Home() {
                 letterSpacing: "-0.02em",
               }}
             >
-              Built with
+              Building with
             </span>
             <span
               className="font-serif italic block leading-none"
@@ -177,8 +176,8 @@ export default function Home() {
             className="text-base md:text-lg mb-8 max-w-md leading-relaxed"
             style={{ color: "rgba(242,237,228,0.7)" }}
           >
-            Building across fintech, SaaS, and AI — bringing structure to
-            ambiguity and shipping things that scale.
+            Bringing structure to ambiguity and shipping things that scale.
+            Across fintech, SaaS, and AI.
           </p>
 
           <div data-hero className="flex flex-wrap gap-3">
@@ -212,7 +211,7 @@ export default function Home() {
           style={{ opacity: 0.06 }}
         >
           <img
-            src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1920&q=80"
+            src="https://images.pexels.com/photos/3825540/pexels-photo-3825540.jpeg?auto=format&fit=crop&w=1920&q=80"
             alt=""
             className="w-full h-full object-cover"
           />
@@ -239,7 +238,7 @@ export default function Home() {
               letterSpacing: "-0.02em",
             }}
           >
-            I find the real problem
+            Finding the real problem
           </p>
           <p
             data-about-line2
@@ -273,23 +272,11 @@ export default function Home() {
           {/* Section header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-4">
             <div>
-              <p
-                className="font-mono text-xs tracking-widest uppercase mb-3"
-                style={{ color: "var(--muted)" }}
+              <h2
+                className="font-mono tracking-widest uppercase mb-3"
+                style={{ color: "var(--muted)", fontSize: "1rem" }}
               >
                 Selected Works
-              </p>
-              <h2
-                className="font-serif italic leading-tight"
-                style={{
-                  fontSize: "clamp(2rem, 4vw, 3rem)",
-                  color: "var(--text)",
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                Six projects.
-                <br />
-                <span style={{ color: "var(--accent)" }}>Real outcomes.</span>
               </h2>
             </div>
             <Link
@@ -303,7 +290,7 @@ export default function Home() {
 
           {/* Cards grid — editorial asymmetric layout */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
-            {caseStudies.map((cs, i) => (
+            {caseStudies.slice(0, 4).map((cs, i) => (
               <WorkCard key={cs.slug} cs={cs} index={i} />
             ))}
           </div>

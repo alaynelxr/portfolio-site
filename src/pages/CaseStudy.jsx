@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams, Link, Navigate } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -40,8 +40,73 @@ function BodyText({ text }) {
   )
 }
 
+function CodeBlock({ filename, code }) {
+  const [expanded, setExpanded] = useState(false)
+  const PREVIEW_LINES = 20
+  const lines = code.split('\n')
+  const visibleLines = expanded ? lines : lines.slice(0, PREVIEW_LINES)
+  const hasMore = lines.length > PREVIEW_LINES
+
+  function lineColor(line) {
+    if (/^#{1,3} /.test(line)) return '#D87A4A'
+    if (/^- \*\*/.test(line)) return '#F2EDE4'
+    if (/^---/.test(line)) return 'rgba(242,237,228,0.2)'
+    return 'rgba(242,237,228,0.75)'
+  }
+
+  function renderLine(line) {
+    // Highlight inline backtick spans in sage
+    return line.replace(/`([^`]+)`/g, '<span style="color:#3DAE82;background:rgba(61,174,130,0.1);padding:0 3px;border-radius:3px">$1</span>')
+      .replace(/\*\*([^*]+)\*\*/g, '<span style="color:#F2EDE4;font-weight:600">$1</span>')
+  }
+
+  return (
+    <div className="rounded-[1.5rem] overflow-hidden my-8" style={{ background: '#1E1A14', border: '1px solid rgba(242,237,228,0.08)' }}>
+      {/* Header bar */}
+      <div className="flex items-center gap-3 px-5 py-3" style={{ borderBottom: '1px solid rgba(242,237,228,0.08)' }}>
+        <div className="flex gap-1.5">
+          <span className="w-3 h-3 rounded-full" style={{ background: 'rgba(242,237,228,0.15)' }} />
+          <span className="w-3 h-3 rounded-full" style={{ background: 'rgba(242,237,228,0.15)' }} />
+          <span className="w-3 h-3 rounded-full" style={{ background: 'rgba(242,237,228,0.15)' }} />
+        </div>
+        <span className="font-mono text-xs" style={{ color: '#D87A4A' }}>{filename}</span>
+      </div>
+
+      {/* Code area */}
+      <div className="relative">
+        <pre className="px-5 py-4 overflow-x-auto" style={{ fontFamily: '"Source Code Pro", monospace', fontSize: '0.78rem', lineHeight: '1.7' }}>
+          {visibleLines.map((line, i) => (
+            <div key={i} className="flex gap-4">
+              <span style={{ color: 'rgba(242,237,228,0.2)', userSelect: 'none', minWidth: '1.5rem', textAlign: 'right', flexShrink: 0 }}>
+                {i + 1}
+              </span>
+              <span style={{ color: lineColor(line) }} dangerouslySetInnerHTML={{ __html: renderLine(line) }} />
+            </div>
+          ))}
+        </pre>
+        {!expanded && hasMore && (
+          <div className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none" style={{ background: 'linear-gradient(to top, #1E1A14 0%, transparent 100%)' }} />
+        )}
+      </div>
+
+      {/* Toggle */}
+      {hasMore && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="w-full py-3 font-mono text-xs uppercase tracking-widest transition-colors duration-200 hover:opacity-80"
+          style={{ color: '#D87A4A', borderTop: '1px solid rgba(242,237,228,0.08)' }}
+        >
+          {expanded ? '↑ collapse' : '↓ show more'}
+        </button>
+      )}
+    </div>
+  )
+}
+
 function renderBold(text) {
-  return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\[(.+?)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">$1</a>')
 }
 
 export default function CaseStudy() {
@@ -156,20 +221,25 @@ export default function CaseStudy() {
         <div ref={contentRef} className="space-y-14 mb-20">
           {cs.sections.map((section) => (
             <div key={section.heading} data-section>
-              <h2
-                className="font-sans font-medium mb-5 pb-3"
-                style={{
-                  fontSize: '0.75rem',
-                  letterSpacing: '0.12em',
-                  textTransform: 'uppercase',
-                  color: 'var(--muted)',
-                  borderBottom: '1px solid var(--muted)',
-                  opacity: 0.7,
-                }}
-              >
-                {section.heading}
-              </h2>
-              <BodyText text={section.body} />
+              {section.heading && (
+                <h2
+                  className="font-sans font-medium mb-5 pb-3"
+                  style={{
+                    fontSize: '0.75rem',
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    color: 'var(--muted)',
+                    borderBottom: '1px solid var(--muted)',
+                    opacity: 0.7,
+                  }}
+                >
+                  {section.heading}
+                </h2>
+              )}
+              {section.type === 'code'
+                ? <CodeBlock filename={section.filename} code={section.code} />
+                : <BodyText text={section.body} />
+              }
               {section.quote && (
                 <blockquote
                   className="mt-8 pl-6 py-2"

@@ -53,7 +53,7 @@ export default function Work() {
             letterSpacing: "-0.03em",
           }}
         >
-          Six projects.
+          Seven projects.
           <br />
           <span style={{ color: "var(--accent)" }}>Real outcomes.</span>
         </h1>
@@ -61,8 +61,8 @@ export default function Work() {
           className="text-base md:text-lg max-w-xl leading-relaxed"
           style={{ color: "var(--muted)" }}
         >
-          Product work across fintech, SaaS, and AI — each one a different
-          problem, each one shipping something that mattered.
+          Product work across fintech, SaaS, and AI along with some personal
+          learnings.
         </p>
       </div>
 
@@ -103,8 +103,7 @@ export default function Work() {
               style={{ color: "var(--muted)" }}
             >
               A Substack on technical PM practices — Claude Code setups, custom
-              AI skills, building for ambiguity. Real workflows, published
-              publicly.
+              AI skills, building for ambiguity.
             </p>
           </div>
           <a
@@ -194,6 +193,12 @@ function CaseStudyCard({ cs, featured }) {
         >
           {cs.title}
         </h3>
+        <p
+          className="text-sm leading-relaxed mb-3 line-clamp-2"
+          style={{ color: "var(--muted)" }}
+        >
+          {cs.summary}
+        </p>
         <div className="flex flex-wrap gap-1.5 mb-3">
           {cs.tags.map((t) => (
             <span

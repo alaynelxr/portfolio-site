@@ -10,7 +10,7 @@ const experience = [
   {
     company: "fileAI",
     role: "Technical Product Manager",
-    period: "Jul 2025 – Mar 2026",
+    period: "Jun 2025 – Feb 2026",
     type: "work",
     highlights: [
       "Drove 30% improvement in AI OCR model accuracy by translating client requirements into ML specifications",
@@ -60,6 +60,19 @@ const technical = [
     type: "project",
     highlights: [
       "Restaurant reservation app deployed on Netlify — React, Auth0, Node.js, Express.js",
+    ],
+  },
+];
+
+const aiBuilds = [
+  {
+    company: "Portfolio Site",
+    role: "Solo Project",
+    period: "2026",
+    type: "project",
+    link: "/work/portfolio-site",
+    highlights: [
+      "Fully custom portfolio site built in a day using Claude Code — React, Vite, Tailwind CSS, GSAP. Designed from a structured Markdown spec with no designer or frontend engineer.",
     ],
   },
 ];
@@ -170,7 +183,17 @@ function TimelineSection({ title, items }) {
                         letterSpacing: "-0.01em",
                       }}
                     >
-                      {item.company}
+                      {item.link ? (
+                        <Link
+                          to={item.link}
+                          className="transition-colors duration-200 hover:text-[var(--accent)]"
+                        >
+                          {item.company}{" "}
+                          <ArrowRight size={12} className="inline mb-0.5" />
+                        </Link>
+                      ) : (
+                        item.company
+                      )}
                     </h3>
                     <p className="text-sm" style={{ color: "var(--accent)" }}>
                       {item.role}
@@ -252,6 +275,7 @@ export default function Experience() {
       {/* Timeline content */}
       <div className="px-6 md:px-16 max-w-4xl mx-auto">
         <TimelineSection title="Work Experience" items={experience} />
+        <TimelineSection title="Shipped with AI" items={aiBuilds} />
         <TimelineSection title="Technical Projects" items={technical} />
         <TimelineSection title="Education" items={education} />
       </div>
