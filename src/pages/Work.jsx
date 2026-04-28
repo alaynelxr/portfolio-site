@@ -53,7 +53,7 @@ export default function Work() {
             letterSpacing: "-0.03em",
           }}
         >
-          Seven projects.
+          Eight projects.
           <br />
           <span style={{ color: "var(--accent)" }}>Real outcomes.</span>
         </h1>

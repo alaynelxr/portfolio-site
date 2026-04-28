@@ -298,6 +298,50 @@ export const caseStudies = [
     ],
   },
   {
+    slug: "splitpot",
+    title:
+      "SplitPot: Building a Zero-Backend Receipt Splitter for Shared Meals",
+    company: "Personal Project",
+    label: "Product & Engineering",
+    subtitle:
+      "Next.js 15 · Tesseract OCR · Zero API costs · Built with Claude Code",
+    metrics: ["£0 running cost", "0 backend", "Singapore-native OCR"],
+    tags: ["Product Design", "Frontend", "AI Tools"],
+    image:
+      "https://images.pexels.com/photos/19775602/pexels-photo-19775602.jpeg?auto=format&fit=crop&w=1200&q=80",
+    heroImage:
+      "https://images.pexels.com/photos/19775602/pexels-photo-19775602.jpeg?auto=format&fit=crop&w=1920&q=80",
+    summary: "A zero-backend web app for splitting shared restaurant bills.",
+    sections: [
+      {
+        heading: "Context",
+        body: `SplitPot is a web app I built to solve a personal recurring problem: the friction of splitting a shared restaurant bill when some dishes were communal, some were shared among certain people and others were individual. \n\n Think drinks, desserts or more specifically the scenario that inspired the app: the sauce bar at a hotpot restaurant. \n\n The additonal complexity of GST, a service charge, and sometimes a discount voucher on top makes the split more annoying to calculate. The existing tools I've found all required an app install or at least an account sign up which is sufficient friction for some. \n\nI built SplitPot with Claude Design (released recently on 17 Apr 2026) and Claude Code tooling and deployed it to Vercel at zero ongoing cost. \n\n Try it at [splitpot.vercel.app.](https://splitpot.vercel.app/)`,
+      },
+      {
+        heading: "Problem",
+        body: `The specific pain I was solving for:\n\n- Existing bill-splitters require guests to sign up or install an app. \n-\n- The whole flow needs to work on seamlessly on a phone, with easy assignment of items to diners.`,
+      },
+      {
+        heading: "Key Product Decisions",
+        body: `**No app install.** One person uses the web app to tally up the bill. No accounts, no sign-up, no friction at the point of sharing. This sounds obvious, but it meaningfully shaped everything downstream: all state lives in memory, all computation is client-side.\n\n**Client-side OCR ** Once the app loads, scanning makes zero server round-trips. Tesseract.js runs entirely in the browser; receipt data is never uploaded anywhere. Language data is bundled from /public so there's no CDN dependency during the scan step either.\n\n**Singapore receipts natively.** The parser auto-detects and separates GST (9%) and service charge (10%) lines from food items, and back-calculates percentages when a receipt only shows the raw charge amount rather than the rate.`,
+      },
+      {
+        heading: "Technical Implementation",
+        body: `**Stack:** Next.js 15 (App Router), TypeScript, Tailwind CSS v4, Zustand for state, Tesseract.js for OCR — deployed to Vercel Hobby (free tier).\n\n**OCR pipeline (fully client-side):** Images are compressed before recognition. The receipt parser applies layered heuristics to handle real-world OCR noise: price matching handles dropped decimal points (2099 → $20.99), a bilingual lookahead promotes English item names from below Chinese-script lines, and keyword blocklists strip totals, addresses, and metadata before any item reaches the UI.\n\n**State management:** A single Zustand store holds the full session — participants, scanned line items, extras, and computed splits. An empty assignedTo: [] array is a semantic shorthand for "split between everyone," avoiding the need to eagerly expand all-participant lists on every item.\n\n**App flow:** Capture → /processing (OCR) → /group (name participants) → /items (review + assign dishes) → /extras (tax/discount) → /summary (per-person totals).`,
+      },
+      {
+        heading: "Trade-offs",
+        body: `**Tesseract.js over an LLM vision layer.** The most deliberate cost/quality trade-off. Tesseract is free at any scale: zero API costs, works offline, no privacy concerns with receipt data leaving the device. The downside is accuracy on messy receipts — smudged text, curved paper, and bilingual layouts produce garbled output that GPT-4o Vision would handle far more robustly.\n\nThe gap is mitigated with a manual correction UI: users can edit any item before calculating. At the scale of a personal side project with no monetisation, Tesseract is the right call. Adding an LLM layer would cost money proportional to usage and introduce an API dependency that defeats the point of zero-cost hosting.\n\n**Client-only architecture.** No server, no database, no auth. Session state lives in memory and resets on close. Deployment is trivially simple and ongoing cost is zero, but there's no history, no saved sessions, and no cross-device sync — which is fine. The use case is single-session: one meal, one split, done.`,
+        quote:
+          "At zero cost and zero ongoing fee, I can share this with anyone. An LLM layer makes that harder to justify.",
+      },
+      {
+        heading: "Reflection",
+        body: `The product decisions and the technical decisions turned out to be the same decisions. Choosing no server made the "no install for guests" promise possible. While I'm not entirely ruling out exploring an LLM layer to improve accuracy yet, choosing Tesseract ensured a mostly reliable POC that does not hurt my wallet.\n\nBuilding with Claude Code and Claude Design meant the initial creation was fast. But the interesting work was still the core PM thought process: figuring out what the app actually needed to do, and being precise about the edge cases (bilingual receipts, dropped decimals, service charge back-calculation) before expecting the tools to handle them.\n\n**Known limitations.**\n\nThe rounding logic is mathematically correct at the group level, but produces a 1–2 cent asymmetry between individuals. When two people share the exact same items, one may end up owing $0.01 more than the other. This is because integer floor division distributes remainders sequentially, not symmetrically. The total is always right; the individual split is fair in aggregate but not perfectly equal by person.\n\nTesseract OCR is also noticeably weaker than what today's vision models can do. It performs reasonably well on e-receipts and clean photographs with good lighting and flat paper, but degrades quickly on physical receipts with smudged ink, curved paper, or small fonts. Bilingual layouts add further noise. In practice, most users will need to correct a few line items manually.\n\n**Next iteration.**\n\n- Swap Tesseract for an optional LLM vision call to meaningfully improve OCR quality \n- Surface the 1-cent remainder allocation visibly in the summary so users understand why two people who shared the same dishes owe fractionally different amounts\n- Session export to a shareable URL for quick post-meal reference\n\n[Try SplitPot](https://splitpot.vercel.app/)`,
+      },
+    ],
+  },
+  {
     slug: "ai-pm-toolkit",
     title: "Building Custom AI Skills That Save 10+ Hours Per Week",
     company: "Personal Project",
