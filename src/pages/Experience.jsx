@@ -66,6 +66,16 @@ const technical = [
 
 const aiBuilds = [
   {
+    company: "SplitPot",
+    role: "Solo Project",
+    period: "2026",
+    type: "project",
+    link: "/work/splitpot",
+    highlights: [
+      "Zero-backend receipt splitter deployed on Vercel — Next.js 15, TypeScript, Tesseract.js OCR, Zustand, Tailwind CSS v4. Client-side only: no server, no API costs, no sign-up.",
+    ],
+  },
+  {
     company: "Portfolio Site",
     role: "Solo Project",
     period: "2026",

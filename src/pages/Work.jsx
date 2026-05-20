@@ -1,16 +1,43 @@
 import { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowRight, BookOpen, Mail, Linkedin } from "lucide-react";
+import { ArrowRight, BookOpen } from "lucide-react";
 import { caseStudies } from "../data/caseStudies";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const filters = [
+  { label: "All",              slug: "all",           value: "all" },
+  { label: "fileAI",           slug: "fileai",        value: "fileAI" },
+  { label: "ReferralCandy",    slug: "referralcandy", value: "ReferralCandy" },
+  { label: "StashAway",        slug: "stashaway",     value: "StashAway" },
+  { label: "Personal Projects",slug: "personal",      value: "Personal Project" },
+];
+
+function slugToValue(slug) {
+  return filters.find((f) => f.slug === slug)?.value ?? "all";
+}
+
 export default function Work() {
   const gridRef = useRef(null);
   const headerRef = useRef(null);
+  const isFirstRender = useRef(true);
+  const [searchParams, setSearchParams] = useSearchParams();
 
+  const activeSlug = searchParams.get("filter") ?? "all";
+  const activeFilter = slugToValue(activeSlug);
+
+  const filteredStudies =
+    activeFilter === "all"
+      ? caseStudies
+      : caseStudies.filter((cs) => cs.company === activeFilter);
+
+  function handleFilterClick(slug) {
+    setSearchParams(slug === "all" ? {} : { filter: slug });
+  }
+
+  // Header + initial card entrance
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from(headerRef.current.children, {
@@ -35,10 +62,29 @@ export default function Work() {
     return () => ctx.revert();
   }, []);
 
+  // Re-animate cards on filter change (skip initial mount)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    const ctx = gsap.context(() => {
+      const cards = gridRef.current.querySelectorAll("[data-card]");
+      gsap.from(cards, {
+        opacity: 0,
+        y: 14,
+        duration: 0.4,
+        stagger: 0.05,
+        ease: "power3.out",
+      });
+    });
+    return () => ctx.revert();
+  }, [activeSlug]);
+
   return (
     <div style={{ background: "var(--bg)" }} className="pt-28 md:pt-32">
       {/* ── Header ─────────────────────────────────────────────────── */}
-      <div ref={headerRef} className="px-6 md:px-16 max-w-6xl mx-auto mb-16">
+      <div ref={headerRef} className="px-6 md:px-16 max-w-6xl mx-auto mb-10">
         <p
           className="font-mono text-xs tracking-widest uppercase mb-4"
           style={{ color: "var(--muted)" }}
@@ -66,10 +112,34 @@ export default function Work() {
         </p>
       </div>
 
+      {/* ── Filters ─────────────────────────────────────────────────── */}
+      <div className="px-6 md:px-16 max-w-6xl mx-auto mb-10">
+        <div className="flex flex-wrap gap-2">
+          {filters.map((f) => {
+            const isActive = activeSlug === f.slug;
+            return (
+              <button
+                key={f.slug}
+                onClick={() => handleFilterClick(f.slug)}
+                className="font-mono text-xs tracking-wider uppercase px-4 py-1.5 rounded-full transition-all duration-200"
+                style={{
+                  background: isActive ? "var(--accent)" : "var(--surface)",
+                  color: isActive ? "var(--bg)" : "var(--muted)",
+                  border: `1px solid ${isActive ? "var(--accent)" : "transparent"}`,
+                  cursor: "pointer",
+                }}
+              >
+                {f.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* ── Case Study Grid ─────────────────────────────────────────── */}
       <div ref={gridRef} className="px-6 md:px-16 max-w-6xl mx-auto mb-24">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {caseStudies.map((cs, i) => (
+          {filteredStudies.map((cs, i) => (
             <CaseStudyCard key={cs.slug} cs={cs} featured={i === 0} />
           ))}
         </div>
@@ -119,8 +189,6 @@ export default function Work() {
           </a>
         </div>
       </section>
-
-      {/* ── Contact ─────────────────────────────────────────────────── */}
     </div>
   );
 }
